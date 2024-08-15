@@ -14,6 +14,8 @@ var roleRouter = require("./routes/role");
 var adminRouter = require("./routes/admin");
 var posisiRouter = require("./routes/posisi");
 var groupRouter = require("./routes/group");
+var anggotaRouter = require("./routes/anggota");
+var kejadianRouter = require("./routes/kejadian");
 
 var app = express();
 
@@ -45,6 +47,8 @@ app.use("/role", roleRouter);
 app.use("/admin", adminRouter);
 app.use("/posisi", posisiRouter);
 app.use("/group", groupRouter);
+app.use("/anggota", anggotaRouter);
+app.use("/kejadian", kejadianRouter);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {

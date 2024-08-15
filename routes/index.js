@@ -1,10 +1,23 @@
 var express = require("express");
 var router = express.Router();
 const fs = require("fs");
+const path = require("path");
 const bcrypt = require("bcrypt");
 const multer = require("multer");
 const ModelRole = require("../model/model_role.js");
 const ModelUsers = require("../model/model_users.js");
+
+const storage = multer.diskStorage({
+  destination: (req, file, cb) => {
+    cb(null, "public/images/upload");
+  },
+  filename: (req, file, cb) => {
+    console.log(file);
+    cb(null, Date.now() + path.extname(file.originalname));
+  },
+});
+
+const upload = multer({ storage: storage });
 
 /* GET home page. */
 router.get("/", function (req, res, next) {
@@ -22,7 +35,7 @@ router.get("/login", function (req, res, next) {
   res.render("auth/login");
 });
 
-router.post("/saveusers", async (req, res) => {
+router.post("/saveusers", upload.single("foto"), async (req, res) => {
   try {
     let { nama_users, email, password, id_role } = req.body;
     let enkripsi = await bcrypt.hash(password, 10);
@@ -31,6 +44,7 @@ router.post("/saveusers", async (req, res) => {
       email,
       password: enkripsi,
       id_role,
+      foto: req.file.filename,
     };
     await ModelUsers.store(Data);
     req.flash("success", "Berhasil membuat pengguna");
@@ -39,6 +53,27 @@ router.post("/saveusers", async (req, res) => {
     console.log(error);
     req.flash("error", "Gagal menyimpan pengguna");
     res.redirect("/register");
+  }
+});
+
+router.post("/tambahAnggota", upload.single("foto"), async (req, res) => {
+  try {
+    let { nama_users, email, password, id_role } = req.body;
+    let enkripsi = await bcrypt.hash(password, 10);
+    let Data = {
+      nama_users,
+      email,
+      password: enkripsi,
+      id_role,
+      foto: req.file.filename,
+    };
+    await ModelUsers.store(Data);
+    req.flash("success", "Berhasil menambah anggota");
+    res.redirect("/anggota");
+  } catch (error) {
+    console.log(error);
+    req.flash("error", "Gagal menambah pengguna");
+    res.redirect("/anggota");
   }
 });
 

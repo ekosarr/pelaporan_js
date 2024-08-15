@@ -35,6 +35,7 @@ router.get("/", async function (req, res, next) {
             title: "Group Management",
             nama_users: userData[0].nama_users,
             id_users: userData[0].id_users,
+            foto: userData[0].foto,
             groups: groupsWithUsage
           });
         }
@@ -117,10 +118,13 @@ router.get("/create", async function (req, res, next) {
 router.get("/edit/:id", async function (req, res, next) {
   let id = req.params.id;
   let rows = await ModelGroup.getId(id);
+  let data = await ModelRole.getAll();
+  const rolesWithoutAdmin = data.filter(role => role.id_role !== 1);
   res.render("group/edit", {
     id: rows[0].id_group,
     nama_group: rows[0].nama_group,
     id_role: rows[0].id_role,
+    data: rolesWithoutAdmin,
   });
 });
 

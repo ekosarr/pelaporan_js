@@ -34,6 +34,7 @@ router.get("/", async function (req, res, next) {
           title: "Role Management",
           nama_users: userData[0].nama_users,
           id_users: userData[0].id_users,
+          foto: userData[0].foto,
           roles: rolesWithUsage
         });
       }

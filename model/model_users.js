@@ -18,6 +18,25 @@ class ModelUsers {
     });
   }
 
+  static async getAnggota() {
+    return new Promise((resolve, reject) => {
+      connection.query(
+        `SELECT *, b.nama_role FROM users as a
+         JOIN role as b ON b.id_role = a.id_role
+         WHERE a.id_role != 1
+         ORDER BY id_users DESC`,
+        (err, rows) => {
+          if (err) {
+            reject(err);
+          } else {
+            resolve(rows);
+          }
+        }
+      );
+    });
+  }
+  
+
   static async getById(id) {
     return new Promise((resolve, reject) => {
       connection.query("SELECT * FROM users WHERE id_users = ?", id, (err, rows) => {
@@ -29,6 +48,23 @@ class ModelUsers {
       });
     });
   }
+
+  static async getByRole(roleId) {
+    return new Promise((resolve, reject) => {
+      connection.query(
+        "SELECT *, b.nama_role FROM users AS a JOIN role AS b ON b.id_role = a.id_role WHERE a.id_role = ? ORDER BY id_users DESC",
+        [roleId],
+        (err, rows) => {
+          if (err) {
+            reject(err);
+          } else {
+            resolve(rows);
+          }
+        }
+      );
+    });
+  }
+  
 
   static async store(data) {
     return new Promise((resolve, reject) => {
@@ -77,6 +113,24 @@ class ModelUsers {
       });
     });
   }
+
+  static async searchUsers(query) {
+    const [users] = await db.query("SELECT * FROM users WHERE nama_users LIKE ?", [`%${query}%`]);
+    return users;
+  }
+
+  static async searchByName(query) {
+    return new Promise((resolve, reject) => {
+      const sql = "SELECT * FROM users WHERE nama_users LIKE ?";
+      connection.query(sql, [`%${query}%`], (error, results) => {
+        if (error) {
+          return reject(error);
+        }
+        resolve(results);
+      });
+    });
+  }
+
 }
 
 module.exports = ModelUsers;

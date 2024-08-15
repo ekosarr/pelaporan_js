@@ -20,7 +20,7 @@
                   <a href="./index.html" class="text-nowrap logo-img text-center d-block py-3 w-100">
                     <img src="images/kominfo.png" width="80" alt="" />
                   </a>
-                  <form action="/saveusers" method="POST">
+                  <form action="/saveusers" method="POST" enctype="multipart/form-data">
                     <div class="mb-3">
                       <label for="nama" class="form-label">Nama</label>
                       <input type="text" class="form-control" name="nama_users" id="nama_users" aria-describedby="textHelp" />
@@ -40,6 +40,10 @@
                         <option value="<%= data[i].id_role %>"><%= data[i].nama_role %></option>
                         <% } %>
                       </select>
+                    </div>
+                    <div class="mb-2">
+                      <label for="nama" class="form-label">Foto</label>
+                      <input type="file" name="foto" id="foto" class="form-control" />
                     </div>
                     <button type="submit" class="btn btn-primary w-100 py-8 fs-4 mb-4 rounded-2">Buat Akun</button>
                     <div class="d-flex align-items-center justify-content-center"></div>
