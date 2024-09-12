@@ -1,8 +1,6 @@
 var express = require("express");
 var router = express.Router();
-const fs = require("fs");
 const bcrypt = require("bcrypt");
-const multer = require("multer");
 const ModelRole = require("../model/model_role.js");
 const ModelUsers = require("../model/model_users.js");
 
@@ -46,37 +44,23 @@ router.post("/log", async (req, res) => {
   let { email, password } = req.body;
   try {
     let Data = await ModelUsers.login(email);
-    console.log("Data raka:", Data);
     if (Data.length > 0) {
       let enkripsi = Data[0].password;
-      let cek = await bcrypt.compare(password, enkripsi);
+              let cek = await bcrypt.compare(password, enkripsi);
       if (cek) {
-        req.session.userId = Data[0].id_users;
-        if (Data[0].id_role === 1) {
-          req.flash("success", "Berhasil login");
-          return res.redirect("/admin");
-        } else if (Data[0].id_role === 3) {
-          req.flash("success", "Berhasil login");
-          return res.redirect("/damkar");
-        } else if (Data[0].id_role === 4) {
-          req.flash("success", "Berhasil login");
-          return res.redirect("/satpol_pp");
-        } else {
-          req.flash("error", "Terjadi kesalahan");
-          return res.redirect("/login");
-        }
+res.json({
+          success: true,
+          role: Data[0].id_role,
+        });
       } else {
-        req.flash("error", "Email atau password salah");
-        return res.redirect("/login");
+        res.json({ success: false, message: "Invalid email or password" });
       }
     } else {
-      req.flash("error", "Akun tidak ditemukan");
-      return res.redirect("/login");
+      res.json({ success: false, message: "Account not found" });
     }
   } catch (err) {
     console.log(err);
-    req.flash("error", "Terjadi kesalahan");
-    return res.redirect("/login");
+    res.status(500).json({ success: false, message: "An error occurred" });
   }
 });
 
