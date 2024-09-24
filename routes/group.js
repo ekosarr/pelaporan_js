@@ -155,5 +155,29 @@ router.get("/delete/:id", async function (req, res, next) {
   res.redirect("/group");
 });
 
+router.get("/get-users-by-role/:id_group", async function (req, res) {
+  try {
+    const id_group = req.params.id_group;
+    console.log("Selected Group ID:", id_group); // Log the group ID
+
+    const groupData = await ModelGroup.getId(id_group);
+
+    if (groupData.length > 0) {
+      const id_role = groupData[0].id_role;
+      console.log("Role ID for Group:", id_role); // Log the role ID
+
+      const users = await ModelAnggotaGrup.getUsersByRole(id_role);
+      res.json(users);
+    } else {
+      console.log("Group not found for ID:", id_group); // Log if group not found
+      res.status(404).json({ error: "Group tidak ditemukan" });
+    }
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: "Terjadi kesalahan" });
+  }
+});
+
+
 module.exports = router;
 

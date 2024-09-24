@@ -32,19 +32,19 @@ class ModelGroup {
     });
   }
 
-  static async getId(id) {
+  static async getId(id_group) {
     return new Promise((resolve, reject) => {
       const query = `
-        SELECT g.id_group, g.nama_group, r.id_role, r.nama_role
-        FROM \`group\` g
-        JOIN role r ON g.id_role = r.id_role
-        WHERE g.id_group = ?
+        SELECT * FROM \`group\`
+        WHERE id_group = ?
       `;
-      connection.query(query, [id], (err, rows) => {
+      connection.query(query, [id_group], (err, rows) => {
         if (err) {
           reject(err);
-        } else {
+        } else if (rows.length > 0) {
           resolve(rows);
+        } else {
+          resolve([]); // Jika tidak ditemukan, kembalikan array kosong
         }
       });
     });
@@ -74,6 +74,21 @@ class ModelGroup {
     });
   }
 
+  // Method to get role ID by group ID
+  static async getRoleByGroupId(groupId) {
+    return new Promise((resolve, reject) => {
+      const query = 'SELECT id_role FROM `group` WHERE id_group = ?';
+      connection.query(query, [groupId], (err, rows) => {
+        if (err) {
+          reject(err);
+        } else {
+          resolve(rows);
+        }
+      });
+    });
+  }
+
+
   static async countByGroup(groupId) {
     return new Promise((resolve, reject) => {
       // Misalnya, kita asumsikan ada tabel `users` dengan kolom `id_role`
@@ -90,6 +105,8 @@ class ModelGroup {
       );
     });
   }
+
+  
 
 }
 

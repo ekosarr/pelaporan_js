@@ -16,6 +16,8 @@ var posisiRouter = require("./routes/posisi");
 var groupRouter = require("./routes/group");
 var anggotaRouter = require("./routes/anggota");
 var kejadianRouter = require("./routes/kejadian");
+var profilRouter = require("./routes/profil");
+var anggotagrupRouter = require("./routes/anggotagrup");
 
 var app = express();
 
@@ -49,6 +51,8 @@ app.use("/posisi", posisiRouter);
 app.use("/group", groupRouter);
 app.use("/anggota", anggotaRouter);
 app.use("/kejadian", kejadianRouter);
+app.use("/profil", profilRouter);
+app.use("/anggotagrup", anggotagrupRouter);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {

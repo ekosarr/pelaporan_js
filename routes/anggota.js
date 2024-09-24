@@ -41,6 +41,7 @@ router.get("/", async function (req, res, next) {
     try {
       // Mendapatkan ID pengguna dari sesi
       const id = req.session.userId;
+  
       // Mendapatkan data pengguna berdasarkan ID
       const userData = await ModelUsers.getById(id);
       if (userData.length > 0) {
@@ -50,7 +51,7 @@ router.get("/", async function (req, res, next) {
         } else {
           // Mendapatkan parameter role dari query string
           const role = req.query.role;
-          
+  
           let users;
           if (role) {
             // Jika ada role yang dipilih, filter berdasarkan id_role
@@ -71,6 +72,8 @@ router.get("/", async function (req, res, next) {
       next(error); // Mengoper error ke middleware error handling Express
     }
   });
+  
+  
   
 
     router.get("/getall", async (req, res) => {

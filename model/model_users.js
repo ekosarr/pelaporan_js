@@ -39,21 +39,11 @@ class ModelUsers {
 
   static async getById(id) {
     return new Promise((resolve, reject) => {
-      connection.query("SELECT * FROM users WHERE id_users = ?", id, (err, rows) => {
-        if (err) {
-          reject(err);
-        } else {
-          resolve(rows);
-        }
-      });
-    });
-  }
-
-  static async getByRole(roleId) {
-    return new Promise((resolve, reject) => {
       connection.query(
-        "SELECT *, b.nama_role FROM users AS a JOIN role AS b ON b.id_role = a.id_role WHERE a.id_role = ? ORDER BY id_users DESC",
-        [roleId],
+        `SELECT *, b.nama_role FROM users as a
+         JOIN role as b ON b.id_role = a.id_role
+         WHERE id_users = ?`,
+        [id],
         (err, rows) => {
           if (err) {
             reject(err);
@@ -64,6 +54,30 @@ class ModelUsers {
       );
     });
   }
+  
+
+  static async getByRoleBelumGroup(roleId) {
+    return new Promise((resolve, reject) => {
+      const query = `
+        SELECT u.id_users, u.nama_users, r.nama_role
+        FROM users u
+        LEFT JOIN groupmembers gm ON u.id_users = gm.id_users
+        JOIN role r ON u.id_role = r.id_role
+        WHERE u.id_role = ? 
+        AND gm.id_users IS NULL 
+        AND u.id_role <> 1
+      `;
+      connection.query(query, [roleId], (err, rows) => {
+        if (err) {
+          reject(err);
+        } else {
+          resolve(rows);
+        }
+      });
+    });
+  }
+  
+   
   
 
   static async store(data) {
@@ -130,6 +144,26 @@ class ModelUsers {
       });
     });
   }
+
+  static async getByRole(id_role) {
+    return new Promise((resolve, reject) => {
+      connection.query(
+        `SELECT *, b.nama_role FROM users as a
+         JOIN role as b ON b.id_role = a.id_role
+         WHERE a.id_role = ?
+         ORDER BY id_users DESC`,
+        [id_role],
+        (err, rows) => {
+          if (err) {
+            reject(err);
+          } else {
+            resolve(rows);
+          }
+        }
+      );
+    });
+  }
+  
 
 }
 
